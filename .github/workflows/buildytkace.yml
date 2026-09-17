@@ -266,6 +266,14 @@ jobs:
           make clean package DEBUG=0 FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS=arm64
           mv packages/*.deb ${{ github.workspace }}/ytkace.deb
 
+      - name: Clone and Build YTLite
+        run: |
+          git clone --quiet --depth=1 https://github.com/mrdrvt99/YTL.git
+          cd YTL
+          echo "YTL_VERSION=$(grep '^Version:' DEBIAN/control | awk '{print $2}')" >> $GITHUB_ENV
+          chmod -R 755 .
+          dpkg-deb --root-owner-group -Zgzip --build . ../ytlite.deb
+
       - name: Clone and Build YouPiP
         if: inputs.youpip == true && steps.cache_tweaks.outputs.cache_youpip_hit != 'true'
         run: |
